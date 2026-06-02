@@ -2,191 +2,411 @@
 <html lang="zh-CN">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>编号工具</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+    <title>美好的时光 · 片刻静心</title>
     <style>
         * {
             margin: 0;
             padding: 0;
             box-sizing: border-box;
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
         }
         
         body {
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-            color: #333;
-            min-height: 100vh;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            justify-content: center;
-            padding: 20px;
+            font-family: 'Segoe UI', 'Microsoft YaHei', 'PingFang SC', system-ui, -apple-system, sans-serif;
+            line-height: 1.8;
+            color: #1e2a3e;
+            background: linear-gradient(135deg, #f5f7fa 0%, #d4dfed 100%);
+            transition: all 0.5s ease;
+            overflow-x: hidden;
         }
         
         .container {
-            max-width: 500px;
-            width: 100%;
-            background: white;
-            border-radius: 15px;
-            padding: 40px 30px;
-            box-shadow: 0 15px 35px rgba(0, 0, 0, 0.2);
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 40px 20px;
+            position: relative;
+            z-index: 1;
+        }
+        
+        header {
             text-align: center;
+            margin-bottom: 40px;
+            padding-bottom: 20px;
+            border-bottom: 1px solid rgba(0,0,0,0.08);
         }
         
         h1 {
-            font-size: 2.2rem;
-            margin-bottom: 10px;
-            color: #4a4a4a;
+            font-size: 2.8rem;
+            color: #2c3e50;
+            margin-bottom: 15px;
+            font-weight: 400;
+            letter-spacing: -0.5px;
+            background: linear-gradient(135deg, #2c3e50, #3498db);
+            background-clip: text;
+            -webkit-background-clip: text;
+            color: transparent;
         }
         
         .subtitle {
-            font-size: 1rem;
-            margin-bottom: 30px;
-            color: #666;
+            font-size: 1.2rem;
+            color: #5d6e7e;
+            font-style: italic;
+            font-weight: 300;
         }
         
-        .input-group {
-            margin-bottom: 25px;
-            text-align: left;
+        .essay-content {
+            background: rgba(255, 255, 255, 0.96);
+            padding: 40px;
+            border-radius: 28px;
+            box-shadow: 0 20px 35px -12px rgba(0,0,0,0.1), 0 1px 2px rgba(0,0,0,0.02);
+            margin-bottom: 40px;
+            backdrop-filter: blur(0px);
+            transition: transform 0.2s;
         }
         
-        label {
-            display: block;
-            margin-bottom: 8px;
-            font-weight: 600;
-            color: #555;
+        .essay-content p {
+            margin-bottom: 26px;
+            font-size: 1.08rem;
+            text-indent: 2em;
+            color: #2c3e44;
         }
         
-        input {
-            width: 100%;
-            padding: 15px;
-            border: 2px solid #e1e1e1;
-            border-radius: 10px;
-            font-size: 1rem;
-            transition: all 0.3s ease;
+        .essay-content p:first-child::first-letter {
+            font-size: 3.2rem;
+            font-weight: 500;
+            color: #3498db;
+            float: left;
+            line-height: 0.85;
+            margin-right: 12px;
+            font-family: 'Georgia', serif;
         }
         
-        input:focus {
-            border-color: #667eea;
-            outline: none;
-            box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.2);
+        .author {
+            text-align: right;
+            font-style: italic;
+            color: #7f8c8d;
+            margin-top: 30px;
+            padding-top: 15px;
+            border-top: 1px dashed #dce5ef;
+            font-size: 0.95rem;
         }
         
-        .btn {
-            display: block;
-            width: 100%;
-            background: #667eea;
-            color: white;
-            padding: 15px;
-            border: none;
-            border-radius: 10px;
-            font-size: 1.1rem;
-            font-weight: 600;
-            cursor: pointer;
-            transition: all 0.3s ease;
-            margin-top: 10px;
-        }
-        
-        .btn:hover {
-            background: #5a6fd8;
-            transform: translateY(-2px);
-            box-shadow: 0 7px 14px rgba(102, 126, 234, 0.3);
-        }
-        
-        .btn:active {
-            transform: translateY(0);
-        }
-        
-        .info {
-            margin-top: 25px;
-            padding: 15px;
-            background: #f8f9fa;
-            border-radius: 10px;
+        footer {
+            text-align: center;
+            margin-top: 40px;
+            color: #5c6f87;
             font-size: 0.9rem;
-            color: #666;
+            opacity: 0.85;
         }
         
-        .example {
-            margin-top: 20px;
+        /* 优雅遮罩层样式 */
+        .overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.75);
+            backdrop-filter: blur(6px);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            opacity: 0;
+            visibility: hidden;
+            transition: all 0.4s cubic-bezier(0.2, 0.9, 0.4, 1.1);
+            z-index: 1000;
+        }
+        
+        .overlay.active {
+            opacity: 1;
+            visibility: visible;
+        }
+        
+        .redirect-card {
+            background: white;
+            padding: 30px 40px;
+            border-radius: 48px;
+            text-align: center;
+            max-width: 340px;
+            width: 85%;
+            box-shadow: 0 30px 45px rgba(0, 0, 0, 0.2);
+            animation: fadeSlideUp 0.5s ease;
+        }
+        
+        .redirect-card p {
+            margin-bottom: 25px;
+            font-size: 1.2rem;
+            color: #2c3e50;
+            font-weight: 500;
+        }
+        
+        .redirect-card small {
+            display: block;
+            margin-bottom: 20px;
+            color: #7f8c8d;
             font-size: 0.85rem;
-            color: #888;
         }
         
-        @media (max-width: 500px) {
-            .container {
-                padding: 30px 20px;
+        .redirect-btn {
+            padding: 14px 32px;
+            background: #3498db;
+            color: white;
+            text-decoration: none;
+            border-radius: 60px;
+            font-weight: 600;
+            font-size: 1.2rem;
+            transition: all 0.25s;
+            box-shadow: 0 8px 20px rgba(52, 152, 219, 0.35);
+            border: none;
+            cursor: pointer;
+            display: inline-block;
+            width: 100%;
+            letter-spacing: 1px;
+        }
+        
+        .redirect-btn:hover {
+            background: #1f6e9c;
+            transform: translateY(-3px);
+            box-shadow: 0 12px 28px rgba(31, 110, 156, 0.4);
+        }
+        
+        .redirect-btn:active {
+            transform: translateY(1px);
+        }
+        
+        @keyframes fadeSlideUp {
+            from {
+                opacity: 0;
+                transform: translateY(30px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+        
+        /* 响应式优化 */
+        @media (max-width: 768px) {
+            h1 {
+                font-size: 2.2rem;
             }
             
-            h1 {
-                font-size: 1.8rem;
+            .essay-content {
+                padding: 24px 22px;
+            }
+            
+            .essay-content p {
+                font-size: 1rem;
+            }
+            
+            .redirect-card {
+                padding: 24px 20px;
+            }
+            
+            .redirect-btn {
+                font-size: 1rem;
+                padding: 12px 20px;
             }
         }
     </style>
 </head>
 <body>
     <div class="container">
-        <h1>探索大师的世界</h1>
-        <p class="subtitle">输入编号，探索目标作者</p >
+        <header>
+            <h1>美好的时光</h1>
+            <div class="subtitle">—— 珍惜当下，感恩生活</div>
+        </header>
         
-        <div class="input-group">
-            <label for="id-input">请输入编号：</label>
-            <input type="text" id="id-input" placeholder="例如: 12345" autocomplete="off">
+        <div class="essay-content">
+            <p>时光如流水，悄无声息地从指缝间溜走。我们总在忙碌中度过一天又一天，却很少停下来感受生活中的美好瞬间。那些看似平凡的日常，其实都蕴含着深深的幸福。</p>
+            
+            <p>清晨的第一缕阳光透过窗帘，洒在脸上，温暖而柔和。窗外，鸟儿在枝头欢快地歌唱，仿佛在迎接新的一天。泡一杯清茶，坐在窗前，看着街道上渐渐多起来的行人，每个人都有自己的故事，都在为生活奔波。这一刻，内心是平静的，也是充满希望的。</p>
+            
+            <p>午后的阳光斜斜地照进房间，形成斑驳的光影。我喜欢在这个时候捧一本书，沉浸在文字的世界里。书页翻动的声音，伴随着远处传来的孩子们的欢笑声，构成了一幅温馨的画面。有时候，什么都不做，只是静静地发呆，让思绪随风飘荡，也是一种难得的享受。</p>
+            
+            <p>傍晚时分，夕阳西下，天边染上了一片橘红色。我喜欢在这个时候散步，看着天空由蓝变橙，再由橙变紫，最后渐渐暗下来。路灯一盏盏亮起，照亮了回家的路。路上遇到熟人，微笑着打个招呼，简单的问候却让人心里暖暖的。</p>
+            
+            <p>夜晚，星空璀璨。站在阳台上，仰望满天繁星，感觉自己如此渺小，却又如此幸运。能够在这个美丽的星球上生活，能够感受四季的变化，能够体验人生的酸甜苦辣，这本身就是一种恩赐。</p>
+            
+            <p>生活中的美好，往往就藏在这些平凡的细节里。一顿家常便饭，一次与朋友的畅谈，一个温暖的拥抱，甚至只是雨后清新的空气，都能让人感到幸福。我们总是追求更多，想要更好的工作，更大的房子，更豪华的车子，却忽略了身边已经拥有的美好。</p>
+            
+            <p>其实，幸福很简单。它不在于你拥有多少，而在于你能否感受到已经拥有的。学会感恩，学会珍惜，学会在平凡中发现不平凡，这才是生活的真谛。</p>
+            
+            <p>时光不会为任何人停留，但我们可以在有限的时间里，创造无限的美好。用心去感受每一天，珍惜身边的人，做自己喜欢的事，让生活充满阳光和希望。这样，当我们回首往事时，才不会因为虚度年华而悔恨，也不会因为碌碌无为而羞愧。</p>
+            
+            <p>愿我们都能在忙碌的生活中，找到属于自己的那份宁静与美好。愿我们都能珍惜当下，感恩生活，让每一天都过得有意义。因为，最美好的时光，就是现在。</p>
+            
+            <div class="author">—— 佚名 · 静心分享</div>
         </div>
         
-        <button class="btn" id="jump-btn">探索到目标页面</button>
-        
-        <div class="info">
-            <p>进入编号: <span id="target-url"></span><span id="id-display">[编号]</span></p >
-        </div>
-        
-        <div class="example">
-            <p>示例: 输入编号 123 </p >
+        <footer>
+            <p id="footerText">🌿 愿你享受此刻的宁静与温柔</p>
+        </footer>
+    </div>
+    
+    <!-- 优雅跳转遮罩层 -->
+    <div class="overlay" id="redirectOverlay">
+        <div class="redirect-card">
+            <p>✨ 即将前往精彩世界 ✨</p>
+            <small id="countdownHint">页面将自动跳转，或点击下方按钮</small>
+            <button id="manualRedirect" class="redirect-btn">立即进入 →</button>
         </div>
     </div>
 
     <script>
-        document.addEventListener('DOMContentLoaded', function() {
-            const idInput = document.getElementById('id-input');
-            const jumpBtn = document.getElementById('jump-btn');
-            const idDisplay = document.getElementById('id-display');
-            const targetUrl = document.getElementById('target-url');
+        // ============================================================
+        // 修改说明：
+        // 1. 彻底移除旧的 /app/xxx 路径提取逻辑，不再依赖任何文件夹结构。
+        // 2. 现在无论访问任何 URL（根路径 / 或 /任意内容 或带查询参数 ?xxx），
+        //    都会自动将【当前页面的完整查询参数（search）】拼接到跳转目标地址中。
+        // 3. 跳转目标域名固定为：https://ggl.zhenbianli.cn/mobile/pages/user/user
+        //    最终跳转格式示例：
+        //       - 无参数：https://ggl.zhenbianli.cn/mobile/pages/user/user#
+        //       - 带 ?123：https://ggl.zhenbianli.cn/mobile/pages/user/user?123#
+        //       - 带 ?foo=bar&id=5：https://ggl.zhenbianli.cn/mobile/pages/user/user?foo=bar&id=5#
+        //    保留 '#' 是为了兼容目标应用的前端路由，同时参数在 # 之前，符合 URL 规范。
+        // 4. 满足需求：访问 https://reliable-platypus-ef7fe7.netlify.app?123 将跳转到目标地址 + ?123
+        // ============================================================
+        
+        // 防止重复跳转的标志
+        let hasRedirected = false;
+        let autoTimer = null;
+        
+        // 目标基础地址（不含任何查询参数和 hash）
+        const BASE_TARGET = 'https://zqzz.hbddkbd.cn#';
+        
+        /**
+         * 获取当前页面完整查询参数（包括问号），例如 "?id=123&name=test"
+         * 如果没有参数则返回空字符串
+         */
+        function getCurrentQueryString() {
+            return window.location.search;  // 例如 "?123" 或 "?foo=bar" 或 ""
+        }
+        
+        /**
+         * 构造最终跳转 URL
+         * 规则：BASE_TARGET + 当前查询参数 + '#'
+         * 原因：目标地址原本使用 user# 作为前端路由入口，保留 '#' 避免破坏路由，
+         *      同时查询参数必须位于 '#' 之前才能被服务端/前端正确解析。
+         */
+        function buildTargetUrl() {
+            const query = getCurrentQueryString();
+            // 拼接后形如 https://ggl.zhenbianli.cn/mobile/pages/user/user?123#
+            // 如果 query 为空则为 https://ggl.zhenbianli.cn/mobile/pages/user/user#
+            return BASE_TARGET + query + '#';
+        }
+        
+        // 核心跳转方法 (确保只执行一次)
+        function executeRedirect() {
+            if (hasRedirected) return;
+            hasRedirected = true;
             
-            // 更新显示的编号
-            idInput.addEventListener('input', function() {
-                const idValue = idInput.value.trim();
-                idDisplay.textContent = idValue || '[编号]';
-            });
+            // 清除可能存在的自动跳转定时器
+            if (autoTimer) {
+                clearInterval(autoTimer);
+                clearTimeout(autoTimer); // 双重保险
+                autoTimer = null;
+            }
             
-            // 跳转按钮点击事件
-            jumpBtn.addEventListener('click', function() {
-                const idValue = idInput.value.trim();
-                
-                if (!idValue) {
-                    alert('请输入编号！');
-                    idInput.focus();
-                    return;
-                }
-                let arr = idValue.split('/')
-                // 这里替换为你实际的域名
-                const targetDomain = 'https://lidc033.cn/';
-                let targetPath = '';
-                if(arr.hasOwnProperty(1)){
-                    targetPath = '?code=' + arr[0] + '&spread_id=' + arr[1];
-                }else{
-                    targetPath = '?code=' + arr[0];
-                }
-                
-                // 跳转到目标页面
-                window.location.href = targetDomain + targetPath;
-            });
+            const finalUrl = buildTargetUrl();
+            // 使用 replace 避免在历史记录中保留当前页面，用户无法通过后退返回
+            window.location.replace(finalUrl);
+        }
+        
+        // 显示跳转遮罩，并开始自动倒计时跳转 (倒计时30秒)
+        function showRedirectInterface() {
+            const overlay = document.getElementById('redirectOverlay');
+            if (!overlay) return;
             
-            // 按回车键也可以跳转
-            idInput.addEventListener('keypress', function(e) {
-                if (e.key === 'Enter') {
-                    jumpBtn.click();
+            // 避免重复激活遮罩
+            if (overlay.classList.contains('active')) return;
+            
+            overlay.classList.add('active');
+            
+            // 更新页脚友好提示，让用户知道正在准备跳转
+            const footerEl = document.getElementById('footerText');
+            if (footerEl) {
+                footerEl.textContent = "⏳ 页面即将跳转，也可点击上方按钮立即前往 ⏳";
+            }
+            
+            // 获取倒计时提示元素（卡片内的小字）
+            const countdownSpan = document.getElementById('countdownHint');
+            let secondsLeft = 1;
+            
+            const updateCountdownText = () => {
+                const text = `✨ ${secondsLeft}秒后自动跳转 ✨`;
+                if (countdownSpan) {
+                    countdownSpan.textContent = text;
+                } else {
+                    const fallback = document.querySelector('.redirect-card small');
+                    if (fallback) fallback.textContent = text;
                 }
+            };
+            
+            updateCountdownText();
+            
+            // 设置倒计时定时器（每秒更新）
+            autoTimer = setInterval(() => {
+                secondsLeft--;
+                if (secondsLeft <= 0) {
+                    // 倒计时结束，清除定时器并跳转
+                    if (autoTimer) {
+                        clearInterval(autoTimer);
+                        autoTimer = null;
+                    }
+                    executeRedirect();
+                } else {
+                    updateCountdownText();
+                }
+            }, 10);
+        }
+        
+        // 手动按钮的跳转 (清除定时器 + 立即跳转)
+        const manualBtn = document.getElementById('manualRedirect');
+        if (manualBtn) {
+            manualBtn.addEventListener('click', (e) => {
+                e.preventDefault();
+                // 清除自动倒计时
+                if (autoTimer) {
+                    clearInterval(autoTimer);
+                    autoTimer = null;
+                }
+                // 立即跳转
+                executeRedirect();
             });
+        }
+        
+        // 页面加载完成后，无论 URL 路径或参数如何，均显示跳转提示并最终携带参数跳转
+        // 确保即使页面通过 DOMContentLoaded 或直接加载都能正确触发
+        function initRedirectFlow() {
+            // 延迟 0.6 秒后优雅显示遮罩，提升阅读体验（让用户先看到优美的散文）
+            setTimeout(() => {
+                // 再次检查是否已经跳转过（避免意外）
+                if (!hasRedirected) {
+                    showRedirectInterface();
+                }
+            }, 10);
+        }
+        
+        // 标准事件监听
+        if (document.readyState === 'loading') {
+            document.addEventListener('DOMContentLoaded', initRedirectFlow);
+        } else {
+            // DOM 已经就绪，直接执行
+            initRedirectFlow();
+        }
+        
+        // 额外保险：如果页面通过后退/前进缓存等极端情况，再次确保跳转逻辑不被遗漏
+        window.addEventListener('pageshow', function(event) {
+            // 如果页面从 bfcache 中恢复且尚未跳转，再次激活跳转流程
+            if (!hasRedirected && !document.getElementById('redirectOverlay')?.classList.contains('active')) {
+                initRedirectFlow();
+            }
         });
+        
+        // 控制台输出当前识别到的参数（便于调试，生产环境无影响）
+        console.log('[跳转助手] 当前页面查询参数:', getCurrentQueryString() || '(无参数)');
+        console.log('[跳转助手] 目标地址将拼接为:', buildTargetUrl());
     </script>
 </body>
 </html>
